@@ -5,26 +5,13 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Edit Shelter</div>
+                    <div class="panel-heading">Shelter {{ $shelter->shelter_name }}</div>
 
                     <div class="panel-body">
-                        <form action="/admin/create" method="POST">
-                            <div class="form-group">
-                                <label for="shelter-name">Shelter Name:</label>
-                                <input type="text" class="form-control" id="shelter-name" name="shelter_name">
-                            </div>
-                            <div class="form-group">
-                                <label for="shelter-address">Shelter Address:</label>
-                                <input type="text" class="form-control" id="shelter-address" name="shelter_address">
-                            </div>
-                            <div class="form-group">
-                                <label for="shelter-phone">Shelter Phone:</label>
-                                <input type="text" class="form-control" id="shelter-phone" name="shelter_phone">
-                            </div>
-                            <button type="submit" class="btn btn-default">Submit</button>
+                        Shelter Name: {{ $shelter->shelter_name }}
+                        Shelter Address: {{ $shelter->shelter_address }}
+                        Shelter Phone: {{ $shelter->shelter_phone }}
 
-                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        </form>
                     </div>
                 </div>
             </div>
