@@ -14,3 +14,19 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::auth();
+
+Route::get('/home', 'HomeController@index');
+
+Route::group(['middleware' => 'auth'], function () {
+//    Route::get('/admin', function() {
+//        return view('admin.index');
+//    });
+    Route::resource('shelters', 'SheltersController');
+
+    Route::group(['namespace' => 'Admin'], function()
+    {
+        Route::resource('admin', 'AdminController');
+    });
+});
