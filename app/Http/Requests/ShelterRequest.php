@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class CreateShelterRequest extends Request
+class ShelterRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class CreateShelterRequest extends Request
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,9 +24,9 @@ class CreateShelterRequest extends Request
     public function rules()
     {
         return [
-            'shelter_name' => 'required|unique',
-            'shelter_address' => 'required|unique',
-            'shelter_phone' => 'required|unique'
+            'shelter_name' => 'required',
+            'shelter_address' => 'required',
+            'shelter_phone' => 'required'
         ];
     }
 }
