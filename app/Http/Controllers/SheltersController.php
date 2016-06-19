@@ -5,9 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Http\Requests\ShelterRequest;
 use App\Shelter;
+use Auth;
+use Illuminate\Support\Facades\Gate;
+use DB;
 
-class ShelterController extends Controller
+class SheltersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +21,7 @@ class ShelterController extends Controller
     public function index()
     {
         $shelters = Shelter::all();
-        return view('admin.index')->with('shelters', $shelters);
+        return view('shelters.index', compact('shelters'));
     }
 
     /**
@@ -27,8 +31,7 @@ class ShelterController extends Controller
      */
     public function create()
     {
-        $shelter = new Shelter();
-        return view('admin.create', ['shelter'=> $shelter]);
+        return view('shelters.create');
     }
 
     /**
@@ -37,15 +40,15 @@ class ShelterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ShelterRequest $request)
     {
-        $shelter = new Shelter;
-        $shelter->shelter_name = $request->shelter_name;
-        $shelter->shelter_address = $request->shelter_address;
-        $shelter->shelter_phone = $request->shelter_phone;
 
-        $shelter->save();
-        return redirect('admin');
+        //auth()->loginUsingId(2);
+        $shelter = new Shelter($request->all());
+
+        Auth::user()->shelters()->save($shelter);
+
+        return redirect('shelters');
     }
 
     /**
@@ -56,9 +59,13 @@ class ShelterController extends Controller
      */
     public function show($id)
     {
-//        $shelter = Shelter::find($id);
-//
-//        return view('admin.show');
+        //auth()->loginUsingId(1);
+        $shelter = Shelter::findOrFail($id);
+//        if (Gate::denies('super_admin', $shelter)) {
+//            abort(403, 'Sorry, you don\'t have permission to view this page.');
+//        }
+
+        return view('shelters.show', compact('shelter'));
     }
 
     /**
@@ -69,10 +76,28 @@ class ShelterController extends Controller
      */
     public function edit($id)
     {
-        $shelter = Shelter::find($id);
+        $shelter = Shelter::findOrFail($id);
 
-        // show the edit form and pass the nerd
-        return view('admin.edit')->with('shelter', $shelter);
+        $users = DB::table('shelter_user')->select('user_id')
+            ->where('shelter_id', '=', $shelter->id)
+            ->get();
+
+        $validUser = false;
+        foreach($users as $user) {
+            if ($user->user_id == Auth::user()->id) {
+                $validUser = true;
+            }
+        }
+
+        if($validUser) {
+            // show the edit form and pass the shelter
+            return view('shelters.edit', compact('shelter'));
+        }
+        else {
+            abort(403, 'Sorry, you don\'t have permission to view this page.');
+        }
+
+
     }
 
     /**
@@ -82,9 +107,13 @@ class ShelterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ShelterRequest $request, $id)
     {
-        //
+        $shelter = Shelter::findOrFail($id);
+
+        $shelter->update($request->all());
+
+        return redirect('shelters');
     }
 
     /**
