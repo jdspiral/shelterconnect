@@ -1,15 +1,25 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: josh
- * Date: 6/17/16
- * Time: 6:14 PM
- */
 
 namespace App;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Shelter
+class Shelter extends Authenticatable
 {
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'shelter_name', 'shelter_address', 'shelter_phone',
+    ];
+    
+    protected $table = 'shelters';
+
+    public function users()
+    {
+        return $this->belongsToMany('App\User');
+    }
 }
