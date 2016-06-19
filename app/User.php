@@ -12,8 +12,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'admin_level', 'email', 'password',
     ];
+
+    protected $table = 'users';
 
     /**
      * The attributes that should be hidden for arrays.
@@ -23,4 +25,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function shelters()
+    {
+        return $this->belongsToMany('App\Shelter')->withTimestamps();
+    }
 }
